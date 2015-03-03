@@ -17,7 +17,7 @@
     if (window.jQuery === undefined || window.jQuery.fn.jquery < v) {
         var done = false;
         var script = document.createElement('script');
-        script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/' + v + '/jquery.min.js';
+        script.src = '//ajax.googleapis.com/ajax/libs/jquery/' + v + '/jquery.min.js';
         script.onload = script.onreadystatechange = function(){
             if (!done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete')) {
                 done = true;
@@ -40,11 +40,10 @@
                 });
             }
 
-            var $j = jQuery.noConflict();
-            if ($j('.a3s').length < 1) {
+            var $panel = jQuery.noConflict()('.a3s');
+            if ($panel.length < 1) {
                 return;
             }
-            var $panel = $j('.a3s').first();
             var old = $panel.html();
             var lines = $panel.text().split("\n");
             var buffer = '';
