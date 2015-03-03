@@ -32,28 +32,21 @@
     function initGmailDiffBookmarklet() {
         (window.gmailDiffBookmarklet = function() {
 
-            // Found at http://stackoverflow.com/a/12034334
-            var entityMap = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': '&quot;', "'": '&#39;', "/": '&#x2F;' };
-            var escapeHtml = function (string) {
-                return String(string).replace(/[&<>"'\/]/g, function (s) {
-                    return entityMap[s];
-                });
-            }
-
             var $panel = jQuery.noConflict()('.a3s');
             if ($panel.length < 1) {
                 return;
             }
             var old = $panel.html();
-            var lines = $panel.text().split("\n");
+            var lines = $panel.html().split("<br>");
             var buffer = '';
             for (var i = 0; i < lines.length; i++) {
-                if (lines[i].match('^-')) {
-                    buffer += '<span style="color: red; font-weight: bold;">' + escapeHtml(lines[i]) + '</span>';
-                } else if (lines[i].match('^\\+')) {
-                    buffer += '<span style="color: green; font-weight: bold;">' + escapeHtml(lines[i]) + '</span>';
+                var line = lines[i].trim();
+                if (line.match('^-')) {
+                    buffer += '<span style="color: red; font-weight: bold;">' + line + '</span>';
+                } else if (line.match('^\\+')) {
+                    buffer += '<span style="color: green; font-weight: bold;">' + line + '</span>';
                 } else {
-                    buffer += escapeHtml(lines[i]);
+                    buffer += line;
                 }
                 buffer += "\n";
             }
