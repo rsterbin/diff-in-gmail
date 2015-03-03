@@ -32,26 +32,45 @@
     function initGmailDiffBookmarklet() {
         (window.gmailDiffBookmarklet = function() {
 
-            var $panel = jQuery.noConflict()('.a3s');
-            if ($panel.length < 1) {
+            do_highlight = function ($panel) {
+                var old = $panel.html();
+                var lines = $panel.html().split("<br>");
+                var buffer = '';
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim();
+                    if (line.match('^-')) {
+                        buffer += '<span style="color: red; font-weight: bold;">' + line + '</span>';
+                    } else if (line.match('^\\+')) {
+                        buffer += '<span style="color: green; font-weight: bold;">' + line + '</span>';
+                    } else if (line.match('^@@')) {
+                        buffer += '<span style="color: orange; font-weight: bold;">' + line + '</span>';
+                    } else if (line.match('^diff ') || line.match('^index ')) {
+                        buffer += '<span style="color: gray; font-weight: bold;">' + line + '</span>';
+                    } else {
+                        buffer += line;
+                    }
+                    buffer += "<br>\n";
+                }
+                $panel.html(buffer);
+                $panel.css('font-family', '"Lucida Console", Monaco, monospace');
+            };
+
+            var $j = jQuery.noConflict();
+            var $panels = $j('.a3s').filter(':visible');
+            if ($panels.length < 1) {
                 return;
             }
-            var old = $panel.html();
-            var lines = $panel.html().split("<br>");
-            var buffer = '';
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i].trim();
-                if (line.match('^-')) {
-                    buffer += '<span style="color: red; font-weight: bold;">' + line + '</span>';
-                } else if (line.match('^\\+')) {
-                    buffer += '<span style="color: green; font-weight: bold;">' + line + '</span>';
+            $panels.each(function (i, panel) {
+                var $panel = $j(panel);
+                var $defs = $panel.find('.gmail_default').filter(':visible');
+                if ($defs.length > 0) {
+                    $defs.each(function ($i, def) {
+                        do_highlight($j(def));
+                    });
                 } else {
-                    buffer += line;
+                    do_highlight($panel);
                 }
-                buffer += "\n";
-            }
-            $panel.html('<pre>' + buffer + '</pre>');
-            $panel.css('font-size', '1.25em');
+            });
 
         })();
     }
