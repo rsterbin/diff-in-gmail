@@ -33,7 +33,12 @@
         (window.gmailDiffBookmarklet = function() {
 
             do_highlight = function ($panel) {
-                var old = $panel.html();
+                // Bail if it's already done
+                if ($panel.hasClass('GmailDiffBookmarkletDone')) {
+                    return;
+                }
+
+                // Color the important lines
                 var lines = $panel.html().split("<br>");
                 var buffer = '';
                 for (var i = 0; i < lines.length; i++) {
@@ -52,14 +57,22 @@
                     buffer += "<br>\n";
                 }
                 $panel.html(buffer);
+
+                // Monospace
                 $panel.css('font-family', '"Lucida Console", Monaco, monospace');
+
+                // Keep track of whether we've run this before
+                $panel.addClass('GmailDiffBookmarkletDone');
             };
 
+            // Find currently visible message panels to highlight
             var $j = jQuery.noConflict();
             var $panels = $j('.a3s').filter(':visible');
             if ($panels.length < 1) {
                 return;
             }
+
+            // Loop through and highlight as needed
             $panels.each(function (i, panel) {
                 var $panel = $j(panel);
                 var $defs = $panel.find('.gmail_default').filter(':visible');
