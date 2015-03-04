@@ -1,6 +1,8 @@
 # diff-in-gmail
 Quick and dirty bookmarklet for highlighting emailed diffs in gmail
 
+**Bookmarklets are dead.  This will still work on Firefox, but I need to rewrite it as an extension, I guess.**
+
 Using
 =====
 
